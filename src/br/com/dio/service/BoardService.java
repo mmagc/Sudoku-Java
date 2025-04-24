@@ -43,14 +43,20 @@ public class BoardService {
         for (int i = 0; i < BOARD_LIMIT; i++) {
             spaces.add(new ArrayList<>());
             for (int j = 0; j < BOARD_LIMIT; j++) {
-                var positionConfig = gameConfig.get("%s,%s".formatted(i, j));
-                var expected = Integer.parseInt(positionConfig.split(",")[0]);
-                var fixed = Boolean.parseBoolean(positionConfig.split(",")[1]);
-                var currentSpace = new Space(expected, fixed);
-                spaces.get(i).add(currentSpace);
+                String key = "%s,%s".formatted(i, j);
+                String positionConfig = gameConfig.get(key);
+
+                if (positionConfig == null) {
+                    spaces.get(i).add(new Space(0, false));
+                    continue;
+                }
+
+                String[] parts = positionConfig.split(",");
+                int expected = Integer.parseInt(parts[0]);
+                boolean fixed = Boolean.parseBoolean(parts[1]);
+                spaces.get(i).add(new Space(expected, fixed));
             }
         }
-
         return spaces;
     }
 }
